@@ -1,0 +1,57 @@
+site_name: DevOps
+site_description: Material de referencia del curso DevOps - ESEN
+site_author: Guillermo Calderón
+
+# Cambiar TU_USUARIO por el usuario real de GitHub
+site_url: https://guillermocalderon2021.github.io/devops-2026/
+
+theme:
+  name: material
+  language: es
+
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: amber
+
+nav:
+  - Inicio: index.md
+
+  - Unidad I. Fundamentos de DevOps y contenerización:
+      - 1. Fundamentos de DevOps: unidad-1/sesion_01_introduccion_a_devops.md
+      - 2. Git para DevOps: unidad-1/sesion_02_git_para_devops.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+
+  - toc:
+      permalink: true
+
+  - pymdownx.details
+
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+
+  - pymdownx.inlinehilite
+
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
