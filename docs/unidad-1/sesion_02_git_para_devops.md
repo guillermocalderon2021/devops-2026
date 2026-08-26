@@ -89,7 +89,7 @@ Una estrategia razonable busca minimizar simultáneamente el **trabajo en curso 
 
 **Trunk-based development (TBD)** es una disciplina de desarrollo en la que los integrantes del equipo integran lotes pequeños de trabajo a una línea principal compartida, normalmente `main` o `trunk`, al menos una vez al día y con frecuencia varias veces durante la jornada. Cuando se utilizan ramas, estas suelen vivir unas pocas horas y funcionan como un mecanismo transitorio de revisión, no como espacios de desarrollo prolongado.
 
-DORA caracteriza trunk-based development mediante integraciones frecuentes al trunk, pocas ramas activas y ramas de vida muy corta. La práctica está asociada al propósito de evitar fases grandes de integración y estabilización al final del trabajo.
+DORA (DevOps Research and Assessment) caracteriza trunk-based development mediante integraciones frecuentes al trunk, pocas ramas activas y ramas de vida muy corta. La práctica está asociada al propósito de evitar fases grandes de integración y estabilización al final del trabajo.
 
 La diferencia fundamental, por tanto, no es "usar ramas" frente a "no usar ramas". Es el tiempo que transcurre antes de que un cambio vuelva a encontrarse con la línea compartida.
 
@@ -115,7 +115,7 @@ Es posible ejecutar compilaciones y pruebas automatizadas en una rama de larga d
 
 Por tanto:
 
-> **Ejecutar CI sobre una rama no equivale a integrar frecuentemente esa rama en `main`.**
+> **Ejecutar un pipeline automatizado de build y pruebas sobre una rama no significa, por sí solo, practicar Continuous Integration. La integración continua requiere que los cambios se incorporen frecuentemente a una línea común de desarrollo, normalmente  `main o trunk`.**
 
 DORA presenta trunk-based development como una práctica necesaria para una implementación efectiva de integración continua: cambios pequeños se incorporan frecuentemente al trunk y una suite automatizada proporciona retroalimentación rápida sobre el estado integrado.
 
