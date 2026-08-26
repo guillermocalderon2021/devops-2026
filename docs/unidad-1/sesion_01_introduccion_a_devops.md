@@ -366,4 +366,4 @@ El resto del curso continuará sobre el recorrido presentado en esta sesión: co
 
 - Kubernetes Documentation. *Kubernetes Self-Healing*, *Deployments* y *ReplicaSet*.
 
-- Redgate Flyway Documentation. *Undo Migrations*. Referencia utilizada para considerar las limitaciones de la reversión de cambios persistentes de base de datos.
+- Redgate Flyway Documentation. *Undo Migrations*. Referencia utilizada para considerar las limitaciones de la reversión de cambios persistentes de base de datos.f
