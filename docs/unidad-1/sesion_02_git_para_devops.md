@@ -16,8 +16,8 @@ Considérese un sistema de comercio electrónico cuyo módulo de promociones se 
 
 Este caso distingue dos problemas que con frecuencia se confunden:
 
-- **conflicto de merge:** Git no puede reconciliar automáticamente determinados cambios realizados sobre las mismas partes de una versión común;
-- **incompatibilidad semántica:** Git produce una combinación técnicamente válida, pero el comportamiento resultante viola una expectativa del sistema.
+- **Conflicto de merge:** Git no puede reconciliar automáticamente determinados cambios realizados sobre las mismas partes de una versión común;
+- **Incompatibilidad semántica:** Git produce una combinación técnicamente válida, pero el comportamiento resultante viola una expectativa del sistema.
 
 Git puede detectar una parte de los conflictos estructurales derivados de la historia del repositorio. No conoce, en cambio, invariantes del dominio como "un descuento no puede producir un total negativo" o "dos promociones no deben aplicarse sobre la misma base de cálculo". La ausencia de un conflicto textual no constituye evidencia de corrección funcional.
 
