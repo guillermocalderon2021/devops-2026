@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+<title id="title">Capas compartidas entre imágenes</title><desc id="desc">Dos imágenes pueden reutilizar capas idénticas y divergir únicamente en capas superiores específicas.</desc>
+<rect width="1600" height="900" fill="#F7F9FB"/>
+<style>
+  text { font-family: 'Segoe UI', Inter, Arial, sans-serif; fill:#1F2933; }
+  .title { font-size:42px; font-weight:700; fill:#123B5D; }
+  .subtitle { font-size:22px; fill:#64748B; }
+  .h { font-size:26px; font-weight:700; }
+  .t { font-size:22px; }
+  .s { font-size:18px; fill:#64748B; }
+  .mono { font-family: Consolas, 'Courier New', monospace; font-size:20px; }
+</style>
+<text x="90" y="85" class="title" text-anchor="start">Capas compartidas entre imágenes</text><text x="90" y="125" class="subtitle" text-anchor="start">Las capas idénticas pueden almacenarse y reutilizarse una sola vez</text><line x1="90" y1="150" x2="1510" y2="150" stroke="#C79A3B" stroke-width="4"/><text x="430" y="220" class="h" text-anchor="middle">Imagen A</text><text x="1170" y="220" class="h" text-anchor="middle">Imagen B</text><rect x="230" y="270" width="400" height="85" rx="12" fill="#DDEBF5" stroke="#1F5A85" stroke-width="2"/><text x="430" y="322" class="t" text-anchor="middle">Código servicio A</text><rect x="230" y="365" width="400" height="85" rx="12" fill="#EAF2F8" stroke="#1F5A85" stroke-width="2"/><text x="430" y="417" class="t" text-anchor="middle">Dependencias A</text><rect x="970" y="270" width="400" height="85" rx="12" fill="#E7F0F7" stroke="#1F5A85" stroke-width="2"/><text x="1170" y="322" class="t" text-anchor="middle">Código servicio B</text><rect x="970" y="365" width="400" height="85" rx="12" fill="#EDF4F8" stroke="#1F5A85" stroke-width="2"/><text x="1170" y="417" class="t" text-anchor="middle">Dependencias B</text><rect x="230" y="495" width="1140" height="90" rx="12" fill="#F4E9CF" stroke="#C79A3B" stroke-width="2"/><text x="800" y="548" class="h" text-anchor="middle">Runtime común: Python 3.12</text><rect x="230" y="600" width="1140" height="90" rx="12" fill="#EEF1F4" stroke="#CBD5E1" stroke-width="2"/><text x="800" y="653" class="h" text-anchor="middle">Imagen base común: distribución Linux slim</text><text x="800" y="750" class="t" text-anchor="middle">Las capas específicas divergen; las capas inferiores idénticas pueden reutilizarse.</text></svg>
