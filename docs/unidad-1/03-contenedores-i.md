@@ -8,12 +8,12 @@ session: 3
 
 ## Resultados de aprendizaje
 
-Al finalizar esta sesión se espera que se pueda:
+Al finalizar esta sesión se espera que el estudiante pueda:
 
-1. distinguir con precisión una imagen de un contenedor y explicar qué estado pertenece a cada uno;
-2. explicar en qué se diferencia el aislamiento de procesos mediante contenedores de la virtualización mediante máquinas virtuales;
-3. interpretar un Dockerfile sencillo e identificar las entradas que afectan su construcción;
-4. predecir qué pasos de una construcción pueden reutilizarse desde caché ante distintos cambios y justificar el resultado.
+1. Distinguir con precisión una imagen de un contenedor y explicar qué estado pertenece a cada uno;
+2. Explicar en qué se diferencia el aislamiento de procesos mediante contenedores de la virtualización mediante máquinas virtuales;
+3. Interpretar un Dockerfile sencillo e identificar las entradas que afectan su construcción;
+4. Predecir qué pasos de una construcción pueden reutilizarse desde caché ante distintos cambios y justificar el resultado.
 
 ## 1. Entorno de ejecución
 
@@ -34,7 +34,7 @@ Una máquina virtual se ejecuta sobre una capa de virtualización y dispone de u
 
 Un contenedor, en cambio, ejecuta procesos aislados que comparten el kernel del entorno de sistema operativo donde funciona el runtime de contenedores. El aislamiento se apoya en mecanismos del kernel para separar procesos, recursos, sistemas de archivos y redes. Como no es necesario iniciar un sistema operativo invitado completo por cada instancia, los contenedores suelen requerir menos recursos adicionales y pueden inicializarse con menor sobrecarga que una máquina virtual equivalente.
 
-![Comparación entre máquinas virtuales y contenedores](../assets/images/s03/figura-01-vm-contenedores.svg)
+![Comparación entre máquinas virtuales y contenedores](../assets/images/s03/1726377330076.jpg)
 
 *Figura 1. Las máquinas virtuales incorporan un kernel invitado por instancia; los contenedores Linux comparten el kernel del entorno Linux en el que se ejecuta el runtime.*
 
