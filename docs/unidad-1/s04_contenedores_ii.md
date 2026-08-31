@@ -1,18 +1,16 @@
 # Sesión 4. Construcción eficiente de imágenes
 
-## Objetivos técnicos de la sesión
+## Resultados de aprendizaje
 
-S03 introdujo el modelo de capas, el Dockerfile, el build context y las reglas básicas de reutilización e invalidación de caché. Esta sesión utiliza esos conceptos para optimizar cuatro aspectos del proceso de construcción:
+La clase anterior introdujo el modelo de capas, el Dockerfile, el build context y las reglas básicas de reutilización e invalidación de caché. Esta sesión utiliza esos conceptos para optimizar cuatro aspectos del proceso de construcción:
 
-1. limitar los archivos que forman parte del **build context**;
-2. estructurar el Dockerfile para reutilizar el **build cache**;
-3. seleccionar y versionar una **imagen base** compatible con el runtime;
-4. separar dependencias de construcción y ejecución mediante **multi-stage builds**.
+1. Limitar los archivos que forman parte del **build context**;
+2. Estructurar el Dockerfile para reutilizar el **build cache**;
+3. Eeleccionar y versionar una **imagen base** compatible con el runtime;
+4. Separar dependencias de construcción y ejecución mediante **multi-stage builds**.
 
 Cada técnica modifica una dimensión diferente del build. `.dockerignore` actúa sobre el contexto transferido al builder; el orden de instrucciones y los cache mounts actúan sobre el trabajo reutilizable; la imagen base y la separación de etapas determinan buena parte del contenido disponible en runtime y del tamaño del artefacto final.
 
-!!! note "Versiones utilizadas en los ejemplos"
-    Los ejemplos de esta sesión utilizan **Node.js 24 LTS** y **Go 1.27**, líneas con soporte vigente en agosto de 2026. Las etiquetas concretas de las imágenes deben verificarse al preparar cada laboratorio, porque los runtimes y las imágenes oficiales evolucionan independientemente del material del curso.
 
 ## 1. Costos del proceso de construcción
 
@@ -27,7 +25,7 @@ La sesión utiliza cuatro problemas observables como referencia:
 | Imagen base sobredimensionada o incompatible | Mayor transferencia, más paquetes o fallas de runtime | Selección de `FROM` |
 | Herramientas de build presentes en producción | Imagen final mayor y con contenido innecesario | Multi-stage builds |
 
-En CI estos costos se acumulan. Una reinstalación de dependencias que tarda un minuto y ocurre en cada commit incrementa directamente el tiempo de retroalimentación. Una imagen innecesariamente grande consume tiempo y ancho de banda cada vez que se transfiere entre el runner, el registry y la plataforma de ejecución.
+En CI estos costos se acumulan: Una reinstalación de dependencias que tarda un minuto y ocurre en cada commit incrementa directamente el tiempo de retroalimentación. Una imagen innecesariamente grande consume tiempo y ancho de banda cada vez que se transfiere entre el runner, el registry y la plataforma de ejecución.
 
 El diagnóstico comienza identificando qué magnitud domina el costo. Reglas generales como “usar menos capas” o “usar siempre la imagen más pequeña” no sustituyen esa medición.
 
@@ -41,7 +39,7 @@ docker build -t servicio:dev .
 
 el punto (`.`) indica que el directorio actual será el contexto.
 
-Las instrucciones `COPY` y `ADD` solo pueden utilizar archivos disponibles dentro de ese contexto. Si el contexto contiene directorios o archivos que el build no necesita, también forman parte del conjunto procesado y enviado al builder.
+Las instrucciones `COPY` y `ADD` solo pueden utilizar archivos disponibles dentro de ese contexto. Todo archivo que no haya sido excluido mediante .`dockerignore` forma parte del contexto disponible para el builder, aunque finalmente ninguna instrucción lo copie a la imagen.
 
 ### 2.1 Exclusión mediante `.dockerignore`
 
@@ -71,10 +69,13 @@ npm-debug.log*
 
 El orden de las reglas es relevante cuando se utiliza `!`: la última regla que coincide con una ruta determina si queda incluida o excluida.
 
-<div style="text-align: center; margin: 1.5rem 0 2rem;">
-    ![Filtrado del build context mediante .dockerignore](../assets/images/s04/01-build-context-dockerignore.png)
-  <p style="margin-top: 0.5rem;"><em>Figura 1. Filtrado del build context mediante <code>.dockerignore</code>. Los archivos excluidos no se transfieren al builder; el build context y la imagen final representan conjuntos distintos.</em></p>
-</div>
+<figure markdown="span">
+  ![Flujo del directorio del proyecto a través de .dockerignore hasta el build context enviado al builder](../assets/images/s04/01-build-context-dockerignore.png)
+
+  <figcaption>
+    Figura 1. Filtrado del build context mediante <code>.dockerignore</code>. Los archivos excluidos no se transfieren al builder; el build context y la imagen final representan conjuntos distintos.
+  </figcaption>
+</figure>
 
 ### 2.2 Efectos del filtrado
 
@@ -139,13 +140,13 @@ CMD ["node", "server.js"]
 
 Ahora la instalación depende únicamente de los archivos que describen el conjunto de dependencias. Un cambio exclusivo en el código fuente puede reutilizar la capa producida por `npm ci`.
 
-<div style="text-align: center; margin: 1.5rem 0 2rem;">
-  <img src="../assets/images/s04/02-cache-invalidation.png"
-       alt="Comparación de dos Dockerfiles que muestra cómo el orden de COPY determina la invalidación y reutilización del build cache"
-       style="width: 100%; max-width: 1200px; height: auto;"
-       loading="lazy">
-  <p style="margin-top: 0.5rem;"><em>Figura 2. Efecto del orden de las instrucciones sobre la invalidación de caché. Separar los archivos de dependencias del código fuente permite reutilizar <code>npm ci</code> cuando solo cambia la aplicación.</em></p>
-</div>
+<figure markdown="span">
+  ![Comparación de dos Dockerfiles que muestra cómo el orden de COPY determina la invalidación y reutilización del build cache](../assets/images/s04/02-cache-invalidation.png)
+
+  <figcaption>
+    Figura 2. Invalidación y reutilización del build cache según el orden de las instrucciones del Dockerfile.
+  </figcaption>
+</figure>
 
 El mismo principio aparece en otros ecosistemas:
 
@@ -220,19 +221,21 @@ Para Node.js 24 existen, entre otras, variantes oficiales basadas en Debian y Al
 
 ### 4.1 Compatibilidad de bibliotecas nativas
 
-La compatibilidad de bibliotecas nativas condiciona la selección de la base. Una dependencia con código compilado puede requerir una ABI y bibliotecas dinámicas concretas.
+Algunas dependencias no están formadas únicamente por código del lenguaje utilizado por la aplicación. También pueden incluir componentes compilados específicamente para determinado entorno del sistema operativo.
 
-Alpine utiliza **musl**, mientras las variantes Debian utilizan **glibc**. Si una dependencia distribuye un binario precompilado únicamente para glibc, cambiar de una base Debian a Alpine puede producir una construcción correcta y una falla posterior al iniciar la aplicación.
+Cuando una imagen base utiliza un entorno diferente al esperado por esos componentes, la aplicación puede construirse correctamente y fallar al ejecutarse.
 
-Compartir glibc tampoco garantiza compatibilidad completa. Un módulo nativo puede requerir `libstdc++`, OpenSSL u otras bibliotecas del sistema. Para binarios ELF, `ldd` permite inspeccionar dependencias dinámicas cuando la imagen de análisis dispone de esa herramienta.
+Por esta razón, la selección de la imagen base debe considerar no solo su tamaño, sino también la compatibilidad con las dependencias de la aplicación.
+
+Por ejemplo, una dependencia con componentes nativos puede funcionar correctamente sobre una imagen basada en Debian y fallar al cambiar a Alpine Linux. Este tipo de incompatibilidad debe verificarse antes de sustituir una imagen base únicamente para reducir tamaño.
 
 La selección de base debe responder a esta secuencia:
 
-1. identificar el runtime necesario;
-2. identificar bibliotecas dinámicas requeridas;
-3. verificar compatibilidad con la distribución y libc de la base;
-4. elegir la variante mínima que mantenga esos requisitos;
-5. verificar que la imagen provenga de una fuente mantenida y confiable.
+1. Identificar el runtime necesario;
+2. Identificar bibliotecas dinámicas requeridas;
+3. Verificar compatibilidad con la distribución y libc de la base;
+4. Elegir la variante mínima que mantenga esos requisitos;
+5. Verificar que la imagen provenga de una fuente mantenida y confiable.
 
 ### 4.2 Tags y digests
 
@@ -254,15 +257,24 @@ El digest mejora reproducibilidad y trazabilidad al fijar contenido exacto. Esa 
 
 ### 4.3 Depuración en imágenes distroless
 
-Las variantes distroless normales no incluyen shell. Comandos como:
+Las imágenes distroless eliminan herramientas que no son necesarias para ejecutar la aplicación. Entre esas herramientas se encuentra normalmente el **shell**, es decir, el intérprete de comandos que permite ejecutar instrucciones dentro del contenedor.
+
+En una imagen convencional puede utilizarse, por ejemplo:
 
 ```bash
 docker exec -it contenedor sh
 ```
 
-no funcionan sobre la imagen de producción normal.
+Este comando intenta abrir una sesión interactiva dentro del contenedor utilizando el programa `sh`.
 
-El proyecto Distroless publica variantes `debug` que incorporan BusyBox para diagnóstico. En producción, la ausencia de shell reduce el contenido disponible dentro del contenedor y desplaza la inspección hacia logs, métricas, herramientas externas o imágenes de depuración específicas.
+En una imagen distroless normal, `sh` no está disponible. Por esta razón, ese mecanismo de inspección interactiva no puede utilizarse.
+
+Esta característica debe considerarse al seleccionar la imagen base. Una imagen distroless reduce el contenido del entorno de ejecución, pero también elimina herramientas que pueden resultar útiles durante el diagnóstico de problemas.
+
+El proyecto Distroless proporciona variantes específicas para depuración que incorporan herramientas adicionales. Estas variantes pueden utilizarse temporalmente cuando se necesita inspeccionar el entorno del contenedor sin añadir esas herramientas a la imagen utilizada normalmente en producción.
+
+!!! note "Implicación operativa"
+    La ausencia de shell no impide que la aplicación se ejecute. La limitación afecta únicamente a la posibilidad de entrar al contenedor y ejecutar comandos interactivos durante una tarea de diagnóstico.
 
 ## 5. Multi-stage builds
 
@@ -295,13 +307,13 @@ La primera etapa contiene el compilador de Go, módulos y cachés de construcci�
 `CGO_ENABLED=0` permite producir, para este ejemplo, un binario sin dependencia de una biblioteca C dinámica. Esto hace posible utilizar una base `static` muy pequeña. Si el programa utiliza CGO o requiere bibliotecas dinámicas, la etapa final debe proporcionar esas dependencias.
 
 
-<div style="text-align: center; margin: 1.5rem 0 2rem;">
-  <img src="../assets/images/s04/03-multi-stage-build.png"
-       alt="Diagrama de un multi-stage build en Go que separa la etapa de compilación de la imagen de runtime"
-       style="width: 100%; max-width: 1200px; height: auto;"
-       loading="lazy">
-  <p style="margin-top: 0.5rem;"><em>Figura 3. Separación entre build y runtime. La etapa final recibe únicamente el artefacto requerido para ejecutar el servicio; compilador, código fuente y cachés permanecen fuera de la imagen final.</em></p>
-</div>
+<figure markdown="span">
+  ![Separación entre la etapa de construcción y la etapa de ejecución mediante un multi-stage build](../assets/images/s04/03-multi-stage-build.png)
+
+  <figcaption>
+    Figura 3. Separación entre build y runtime mediante un multi-stage build. Solo los artefactos seleccionados se copian a la imagen final.
+  </figcaption>
+</figure>
 
 ### 5.2 Ejemplo con Node.js
 
@@ -420,13 +432,13 @@ Comparar:
 - contenido de `docker history`;
 - pasos de build que permanecen reutilizables después de modificar código fuente.
 
-<div style="text-align: center; margin: 1.5rem 0 2rem;">
-  <img src="../assets/images/s04/04-comparacion-build.png"
-       alt="Ejemplo visual de comparación entre builds mostrando transferencia del contexto, reutilización de caché y tamaño de imagen"
-       style="width: 100%; max-width: 1200px; height: auto;"
-       loading="lazy">
-  <p style="margin-top: 0.5rem;"><em>Figura 4. Ejemplo de las evidencias que deben observarse durante la comparación experimental: transferencia del contexto, pasos reutilizados desde caché y tamaño de la imagen final. Las cifras de la demostración deben obtenerse de la ejecución real en el entorno de clase.</em></p>
-</div>
+<figure markdown="span">
+  ![Comparación experimental del build mostrando tamaño del contexto, reutilización de caché y tamaño de la imagen final](../assets/images/s04/04-comparacion-build.png)
+
+  <figcaption>
+    Figura 4. Evidencia observable durante la comparación de builds: tamaño del contexto transferido, reutilización de caché y tamaño de la imagen final. Los valores mostrados son ilustrativos.
+  </figcaption>
+</figure>
 
 ### Preguntas de análisis
 
@@ -588,11 +600,6 @@ La cantidad de capas no es una métrica suficiente de calidad. La prioridad es c
 
 6. **Evidencia.** A partir de una salida de `docker build --progress=plain`, `docker image ls` y `docker history`, identificar si el problema observado corresponde principalmente al contexto, al caché o al contenido de la imagen final.
 
-## 11. Relación con S05
-
-S04 optimiza **cómo se construye** una imagen y **qué contenido llega al runtime**. S05 parte de esa imagen para tratar controles de seguridad específicos: usuario no privilegiado, secretos de build y runtime, análisis de vulnerabilidades, tags y registries.
-
-La selección de base y los multi-stage builds modifican la superficie disponible en la imagen. S05 incorpora controles de seguridad adicionales sobre ese artefacto.
 
 ## Referencias
 
@@ -600,8 +607,5 @@ La selección de base y los multi-stage builds modifican la superficie disponibl
 - Docker Documentation. *Optimize cache usage in builds* y *Build cache invalidation*.
 - Docker Documentation. *Building best practices*.
 - Docker Documentation. *Multi-stage builds*.
-- Docker Documentation. *Dockerfile reference*.
 - Node.js. *Node.js Releases* y *End-of-Life releases*.
-- Docker Official Image: Node.js. Variantes y etiquetas soportadas.
-- Go Documentation. *Go 1.27 Release Notes* y política de versiones soportadas.
-- GoogleContainerTools. *Distroless* y documentación de imágenes Node.js.
+
