@@ -72,10 +72,7 @@ npm-debug.log*
 El orden de las reglas es relevante cuando se utiliza `!`: la última regla que coincide con una ruta determina si queda incluida o excluida.
 
 <div style="text-align: center; margin: 1.5rem 0 2rem;">
-  <img src="../assets/images/s04/01-build-context-dockerignore.png"
-       alt="Flujo del directorio del proyecto a través de .dockerignore hasta el build context enviado al builder"
-       style="width: 100%; max-width: 1200px; height: auto;"
-       loading="lazy">
+    ![Filtrado del build context mediante .dockerignore](../assets/images/s04/01-build-context-dockerignore.png)
   <p style="margin-top: 0.5rem;"><em>Figura 1. Filtrado del build context mediante <code>.dockerignore</code>. Los archivos excluidos no se transfieren al builder; el build context y la imagen final representan conjuntos distintos.</em></p>
 </div>
 
