@@ -379,75 +379,7 @@ docker image ls servicio
 docker history servicio:baseline
 ```
 
-## 7. Comparación experimental de builds
-
-La demostración utiliza una aplicación Node.js preparada con:
-
-- `node_modules` instalado localmente;
-- un directorio `.git` con historial;
-- un `.env` local;
-- un archivo de lock;
-- una fase de compilación, por ejemplo TypeScript;
-- una dependencia nativa compatible con glibc.
-
-### Variante A: build sin optimización
-
-```dockerfile
-FROM node:24-bookworm
-WORKDIR /app
-COPY . .
-RUN npm ci
-RUN npm run build
-CMD ["node", "dist/server.js"]
-```
-
-Construir y registrar:
-
-```bash
-docker build --progress=plain -t servicio:a .
-docker image ls servicio
-docker history servicio:a
-```
-
-Observar especialmente la línea `transferring context`.
-
-### Variante B: `.dockerignore` y caché
-
-Agregar `.dockerignore` y reordenar el Dockerfile para copiar primero `package.json` y `package-lock.json`. Construir dos veces, modificando únicamente un archivo dentro de `src/` entre ambas ejecuciones.
-
-Registrar:
-
-- tamaño del contexto;
-- pasos marcados como `CACHED`;
-- tiempo relativo de la instalación de dependencias.
-
-### Variante C: multi-stage
-
-Separar la compilación de la etapa de ejecución y utilizar una variante `node:24-bookworm-slim` como runtime.
-
-Comparar:
-
-- tamaño del contexto de B y C;
-- tamaño final de las imágenes A y C;
-- contenido de `docker history`;
-- pasos de build que permanecen reutilizables después de modificar código fuente.
-
-<figure markdown="span">
-  ![Comparación experimental del build mostrando tamaño del contexto, reutilización de caché y tamaño de la imagen final](../assets/images/s04/04-comparacion-build.png)
-
-  <figcaption>
-    Figura 4. Evidencia observable durante la comparación de builds: tamaño del contexto transferido, reutilización de caché y tamaño de la imagen final. Los valores mostrados son ilustrativos.
-  </figcaption>
-</figure>
-
-### Preguntas de análisis
-
-1. ¿Qué relación existe entre el tamaño del contexto y el tamaño de la imagen final? Explique por qué pueden variar de forma independiente.
-2. ¿Por qué un cambio en `src/` puede reutilizar la instalación de dependencias?
-3. ¿Qué contenido desaparece de la imagen final al introducir multi-stage?
-4. ¿Qué parte de la reducción de tamaño corresponde al cambio de base y cuál a la separación de etapas?
-
-## 8. Caso: optimización de una imagen Node.js
+## 7. Caso: optimización de una imagen Node.js
 
 Un equipo mantiene un servicio Node.js 24 con Express y TypeScript. El servicio procesa archivos mediante una dependencia que incluye un módulo nativo. El proveedor de esa dependencia distribuye binarios precompilados para Linux vinculados contra glibc.
 
@@ -551,7 +483,7 @@ CMD ["node", "dist/server.js"]
 
 La elección de `bookworm-slim` mantiene glibc y la misma familia de distribución que la etapa de build. Las bibliotecas adicionales requeridas por el módulo nativo deben instalarse también en la etapa runtime.
 
-## 9. Antipatrones de construcción
+## 8. Antipatrones de construcción
 
 ### Copiar todo antes de instalar dependencias
 
@@ -586,7 +518,7 @@ Puede producir instalaciones basadas en índices reutilizados desde una capa de 
 
 La cantidad de capas no es una métrica suficiente de calidad. La prioridad es controlar dependencias, caché, contenido de runtime y reproducibilidad.
 
-## 10. Ejercicios de diagnóstico y optimización
+## 9. Ejercicios de diagnóstico y optimización
 
 1. **Build context.** Proponer un `.dockerignore` para el caso técnico y clasificar cada exclusión como rendimiento, reducción de riesgo de copia accidental o ambas.
 
