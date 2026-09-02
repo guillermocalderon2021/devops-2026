@@ -16,5 +16,6 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 2. [Git para DevOps](unidad-1/sesion_02_git_para_devops.md)
 3. [Contenedores I](unidad-1/03-contenedores-i.md)
 4. [Contenedores II](unidad-1/s04_contenedores_ii.md)
+4. [Contenedores II](unidad-1/s05_contenedores_iii.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
