@@ -32,6 +32,7 @@ nav:
       - 3. Contenedores I: unidad-1/03-contenedores-i.md
       - 4. Contenedores II: unidad-1/s04_contenedores_ii.md
       - 5. Contenedores III: unidad-1/s05_contenedores_iii.md
+      - 6. Docker compose: unidad-1/s06_docker_compose.md
 
 plugins:
   - search
