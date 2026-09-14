@@ -19,4 +19,8 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 5. [Contenedores II](unidad-1/s05_contenedores_iii.md)
 6. [Docker compose](unidad-1/s06_docker_compose.md)
 
+### Unidad II. Integración y Entrega Continua
+
+1. [Fundamentos de CI con Github Actions](unidad-2/s07_fundamentos_ci_github_actions.md)
+
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
