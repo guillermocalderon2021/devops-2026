@@ -62,7 +62,7 @@ La Figura 2 representa el modelo que se utilizará en el ejemplo de la sesión. 
 
 Un workflow es un proceso automatizado definido mediante un archivo YAML dentro de `.github/workflows/`. GitHub detecta los archivos válidos ubicados en ese directorio y los asocia al repositorio. Un repositorio puede contener varios workflows independientes, por ejemplo uno para integración continua y otro para despliegue.
 
-Docker Compose también utiliza YAML, pero describe un problema distinto. Un archivo `compose.yaml` declara servicios que deben ejecutarse y relacionarse entre sí; un workflow de GitHub Actions declara un proceso automatizado que comienza ante un evento y termina cuando sus jobs concluyen.
+ Un workflow de GitHub Actions declara un proceso automatizado que comienza ante un evento y termina cuando sus jobs concluyen.
 
 ### Eventos y disparadores
 
@@ -72,6 +72,8 @@ El bloque `on` declara qué eventos pueden iniciar una ejecución del workflow. 
 - `pull_request`: permite reaccionar ante cambios relacionados con una solicitud de incorporación hacia una rama objetivo.
 
 Los eventos pueden filtrarse por rama u otras condiciones. La elección del disparador determina **cuándo** se obtiene retroalimentación y, por tanto, forma parte del diseño del pipeline.
+
+![Eventos que desencadenan workflows](../assets/images/s07/eventos.png)
 
 ### Jobs
 
