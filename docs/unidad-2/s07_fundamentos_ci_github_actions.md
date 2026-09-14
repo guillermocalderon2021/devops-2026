@@ -57,6 +57,7 @@ La Figura 2 representa el modelo que se utilizará en el ejemplo de la sesión. 
 
 ![Modelo de ejecución de GitHub Actions - Elementos](../assets/images/s07/resumen.png)
 
+
 ### Workflow
 
 Un workflow es un proceso automatizado definido mediante un archivo YAML dentro de `.github/workflows/`. GitHub detecta los archivos válidos ubicados en ese directorio y los asocia al repositorio. Un repositorio puede contener varios workflows independientes, por ejemplo uno para integración continua y otro para despliegue.
