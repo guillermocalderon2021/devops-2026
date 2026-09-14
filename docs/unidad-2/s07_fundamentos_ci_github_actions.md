@@ -197,60 +197,6 @@ docker build -> ¿puede construirse la imagen?
 
 GitHub Actions no sustituye estos mecanismos: los automatiza ante eventos definidos por el equipo y publica sus resultados para cada cambio.
 
-## Preparación del repositorio para la práctica
-
-Cada estudiante debe trabajar sobre un **fork propio** del repositorio docente. No debe clonar directamente el repositorio del profesor para realizar los cambios de la práctica, porque el objetivo es que cada persona pueda crear ramas, publicar commits, ejecutar GitHub Actions y abrir pull requests dentro de un repositorio que controla.
-
-El procedimiento es el siguiente:
-
-1. Abrir el repositorio docente [guillermocalderon2021/devops-ci-cd-demo](https://github.com/guillermocalderon2021/devops-ci-cd-demo) y utilizar **Fork** para crear una copia en la cuenta personal de GitHub.
-2. Clonar **el fork propio**. Sustituir `<usuario>` por el nombre de usuario de GitHub:
-
-    ```bash
-    git clone https://github.com/<usuario>/devops-ci-cd-demo.git
-    cd devops-ci-cd-demo
-    ```
-
-3. Abrir la pestaña **Actions** del fork. Si GitHub indica que los workflows están deshabilitados para ese repositorio, habilitarlos antes de continuar. El archivo `.github/workflows/ci.yml` forma parte del repositorio y se copia con el fork.
-4. Preparar el entorno local y ejecutar las verificaciones iniciales:
-
-    ```bash
-    python -m pip install -r requirements-dev.txt
-    python -m pytest
-    flake8 app tests
-    docker build -t devops-ci-cd-demo:local .
-    ```
-
-5. Generar una primera ejecución satisfactoria de CI en el fork. Como el workflow responde a `push` sobre `main`, puede utilizarse un commit vacío que no modifica archivos:
-
-    ```bash
-    git switch main
-    git pull
-    git commit --allow-empty -m "Inicializa CI en el fork"
-    git push origin main
-    ```
-
-    En la pestaña **Actions**, esperar a que `test`, `lint` y `build` finalicen satisfactoriamente. GitHub requiere que un status check obligatorio haya finalizado correctamente en el repositorio durante los siete días anteriores para poder utilizarlo como required status check.
-
-6. Configurar en el fork un **branch ruleset** para `main`. Los branch rulesets del repositorio docente no se heredan automáticamente al crear un fork. En **Settings → Rules → Rulesets**, crear una regla activa para `main`, activar **Require a pull request before merging** y **Require status checks to pass**, y seleccionar `test`, `lint` y `build` como checks obligatorios.
-7. Para los ejercicios de la sesión, crear una rama de trabajo, publicar los cambios en el fork y abrir el pull request hacia `main` **dentro del mismo fork**. A partir de este punto no debe trabajarse directamente sobre `main`.
-
-El tag `s07-ci-basico` permite recuperar el estado estable utilizado como punto de partida de esta sesión:
-
-```bash
-git fetch --tags
-git checkout s07-ci-basico
-```
-
-Un tag identifica un commit concreto y no constituye una rama de trabajo. Para realizar modificaciones a partir de ese estado debe crearse una rama nueva, por ejemplo:
-
-```bash
-git switch -c practica-s07 s07-ci-basico
-```
-
-!!! warning "Fork y ruleset"
-    El workflow `ci.yml` sí se copia con el fork porque es un archivo versionado del repositorio. El branch ruleset que protege `main` no se copia. Si el estudiante omite la configuración del ruleset, los checks pueden ejecutarse y reportar fallos, pero esos resultados no actuarán necesariamente como gate que bloquee la fusión.
-
 ## Estructura de un workflow
 
 El archivo `.github/workflows/ci.yml` define tres jobs independientes: `test`, `lint` y `build`.
@@ -401,6 +347,60 @@ La Figura 4 muestra el resultado real de esta regresión en el repositorio de de
 - El workflow genera la evidencia; la política del repositorio determina si esa evidencia bloquea la integración.
 - Un nuevo commit produce una nueva verificación automática.
 - La repetición de preparación entre jobs deja abierto el problema de ingeniería que se estudia en S08.
+
+## Preparación del repositorio para la práctica
+
+Cada estudiante debe trabajar sobre un **fork propio** del repositorio docente. No debe clonar directamente el repositorio del profesor para realizar los cambios de la práctica, porque el objetivo es que cada persona pueda crear ramas, publicar commits, ejecutar GitHub Actions y abrir pull requests dentro de un repositorio que controla.
+
+El procedimiento es el siguiente:
+
+1. Abrir el repositorio docente [guillermocalderon2021/devops-ci-cd-demo](https://github.com/guillermocalderon2021/devops-ci-cd-demo) y utilizar **Fork** para crear una copia en la cuenta personal de GitHub.
+2. Clonar **el fork propio**. Sustituir `<usuario>` por el nombre de usuario de GitHub:
+
+    ```bash
+    git clone https://github.com/<usuario>/devops-ci-cd-demo.git
+    cd devops-ci-cd-demo
+    ```
+
+3. Abrir la pestaña **Actions** del fork. Si GitHub indica que los workflows están deshabilitados para ese repositorio, habilitarlos antes de continuar. El archivo `.github/workflows/ci.yml` forma parte del repositorio y se copia con el fork.
+4. Preparar el entorno local y ejecutar las verificaciones iniciales:
+
+    ```bash
+    python -m pip install -r requirements-dev.txt
+    python -m pytest
+    flake8 app tests
+    docker build -t devops-ci-cd-demo:local .
+    ```
+
+5. Generar una primera ejecución satisfactoria de CI en el fork. Como el workflow responde a `push` sobre `main`, puede utilizarse un commit vacío que no modifica archivos:
+
+    ```bash
+    git switch main
+    git pull
+    git commit --allow-empty -m "Inicializa CI en el fork"
+    git push origin main
+    ```
+
+    En la pestaña **Actions**, esperar a que `test`, `lint` y `build` finalicen satisfactoriamente. GitHub requiere que un status check obligatorio haya finalizado correctamente en el repositorio durante los siete días anteriores para poder utilizarlo como required status check.
+
+6. Configurar en el fork un **branch ruleset** para `main`. Los branch rulesets del repositorio docente no se heredan automáticamente al crear un fork. En **Settings → Rules → Rulesets**, crear una regla activa para `main`, activar **Require a pull request before merging** y **Require status checks to pass**, y seleccionar `test`, `lint` y `build` como checks obligatorios.
+7. Para los ejercicios de la sesión, crear una rama de trabajo, publicar los cambios en el fork y abrir el pull request hacia `main` **dentro del mismo fork**. A partir de este punto no debe trabajarse directamente sobre `main`.
+
+El tag `s07-ci-basico` permite recuperar el estado estable utilizado como punto de partida de esta sesión:
+
+```bash
+git fetch --tags
+git checkout s07-ci-basico
+```
+
+Un tag identifica un commit concreto y no constituye una rama de trabajo. Para realizar modificaciones a partir de ese estado debe crearse una rama nueva, por ejemplo:
+
+```bash
+git switch -c practica-s07 s07-ci-basico
+```
+
+!!! warning "Fork y ruleset"
+    El workflow `ci.yml` sí se copia con el fork porque es un archivo versionado del repositorio. El branch ruleset que protege `main` no se copia. Si el estudiante omite la configuración del ruleset, los checks pueden ejecutarse y reportar fallos, pero esos resultados no actuarán necesariamente como gate que bloquee la fusión.
 
 ## Límites de la integración continua
 
