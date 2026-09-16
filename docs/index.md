@@ -24,3 +24,12 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 1. [Fundamentos de CI con Github Actions](unidad-2/s07_fundamentos_ci_github_actions.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
+
+## Laboratorios
+
+| Laboratorio | Tema | Fecha límite |
+|---|---|---|
+| [Laboratorio 1](labs/lab01_contenedores.md) | Construcción y optimización de contenedores | 20 de septiembre de 2026 |
+
+Los laboratorios se realizan en parejas y sus instrucciones completas se
+publican en esta sección.

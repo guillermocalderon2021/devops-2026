@@ -37,6 +37,14 @@ nav:
   - Unidad II. Integración y entrega continua:
       - 1. Fundamentos de CI con Github Actions: unidad-2/s07_fundamentos_ci_github_actions.md
 
+  - Unidad III. Infraestructura como código:
+      # sesiones correspondientes
+
+  - Unidad IV. Orquestación y operación de plataformas:
+      # sesiones correspondientes
+
+  - Laboratorios:
+      - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md
 plugins:
   - search
 
