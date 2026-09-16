@@ -728,9 +728,4 @@ La ingeniería de pipelines intenta responder ambas.
 - GitHub Docs. *Workflow syntax for GitHub Actions*. https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
 - GitHub Docs. *Secure use reference*. https://docs.github.com/en/actions/reference/security/secure-use
 - GitHub Docs. *Use GITHUB_TOKEN for authentication in workflows*. https://docs.github.com/en/actions/tutorials/authenticate-with-github_token
-- GitHub. `actions/checkout`.
-- GitHub. `actions/setup-python`.
-- GitHub. `actions/cache`.
-- GitHub. `actions/upload-artifact`.
-- GitHub. `actions/download-artifact`.
 - Humble, J. y Farley, D. *Continuous Delivery*. Addison-Wesley.
