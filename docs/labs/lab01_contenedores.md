@@ -6,7 +6,7 @@
 |---|---|
 | Modalidad | Parejas |
 | Ponderación | 5% de la calificación final |
-| Fecha límite | Domingo 20 de septiembre de 2026 |
+| Fecha límite | Lunes 21 de septiembre de 2026 |
 | Repositorio inicial | [devops-lab01-starter](https://github.com/guillermocalderon2021/devops-lab01-starter) |
 | Entrega | Enlace al repositorio privado de la pareja en Moodle |
 
@@ -18,7 +18,7 @@ El objetivo no es modificar la lógica de negocio de la aplicación. El trabajo 
 
 ## Resultados de aprendizaje
 
-Al finalizar el laboratorio, la pareja deberá ser capaz de:
+Al finalizar el laboratorio, los estudiantes deberán ser capaces de:
 
 1. analizar una configuración de contenedores e identificar decisiones que afectan el tamaño de la imagen, la reproducibilidad, el uso de caché, la seguridad y la configuración;
 2. construir una imagen de contenedor utilizando apropiadamente el contexto de construcción, `.dockerignore`, caché y multi-stage builds;
@@ -186,15 +186,17 @@ La pareja deberá comprobar mediante un comando o inspección de la imagen cuál
 
 ## 5.2 Configuración de entorno
 
-La configuración específica del entorno no deberá quedar incorporada dentro de la imagen.
+La configuración necesaria para conectar y ejecutar los servicios deberá proporcionarse en tiempo de ejecución y no quedar incorporada al Dockerfile ni a la imagen construida.
 
-La imagen deberá poder construirse independientemente de los valores concretos utilizados para:
+La misma imagen deberá poder utilizarse con diferentes valores de configuración sin necesidad de reconstruirla. Esto incluye, entre otros:
 
 - host de la base de datos;
 - nombre de la base de datos;
 - usuario;
 - contraseña;
-- puerto expuesto por la aplicación.
+- puerto publicado para acceder a la aplicación desde el host.
+
+Los valores correspondientes al entorno local podrán suministrarse mediante Docker Compose y variables de entorno.
 
 ## 5.3 Credenciales
 
@@ -372,10 +374,9 @@ Antes de enviar el enlace deberá comprobarse que:
 - existe `EVIDENCIAS.md`;
 - existe `.env.example`;
 - `.env` no está versionado;
-- la solución puede construirse desde cero;
-- la fecha límite no ha sido superada.
+- la solución puede construirse desde cero.
 
-**Fecha límite: domingo 20 de septiembre de 2026.**
+**Fecha límite: Lunes 21 de septiembre de 2026.**
 
 ---
 
