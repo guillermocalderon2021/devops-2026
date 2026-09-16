@@ -22,6 +22,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 ### Unidad II. Integración y Entrega Continua
 
 1. [Fundamentos de CI con Github Actions](unidad-2/s07_fundamentos_ci_github_actions.md)
+2. [Ingenieria de Pipelines](unidad-2/s08_ingenieria_pipelines_ci.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 

@@ -36,6 +36,7 @@ nav:
 
   - Unidad II. Integración y entrega continua:
       - 1. Fundamentos de CI con GitHub Actions: unidad-2/s07_fundamentos_ci_github_actions.md
+      - 2. Ingeniería de pipelines: unidad-2/s08_ingenieria_pipelines_ci.md
 
   - Laboratorios:
       - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md
