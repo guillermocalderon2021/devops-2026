@@ -46,6 +46,8 @@ jobs:
 
 Agregar `needs` no debe entenderse como una forma de "ordenar" visualmente un workflow. Cada dependencia elimina una posibilidad de paralelismo. Por tanto, debe existir una razón técnica para introducirla.
 
+![Dependencia de jobs mediante needs](../assets/images/s08/dependencia_jobs.png)
+
 ### 1.2 Transferencia de archivos entre jobs
 
 Los steps de un mismo job comparten el sistema de archivos del runner. Los jobs distintos no lo hacen.
@@ -95,6 +97,138 @@ Los artifacts pueden además descargarse posteriormente desde la interfaz de Git
 ![Dependencia entre jobs y transferencia de artifacts](../assets/images/s08/fig_needs_artifacts.png)
 
 *Figura 1. `needs` establece la dependencia de ejecución entre jobs, mientras que los artifacts permiten transferir archivos entre runners independientes.*
+
+### 1.3 Outputs entre jobs
+
+No toda información que debe pasar de un job a otro requiere transferir un archivo. Cuando se necesita comunicar un **valor pequeño**, como un identificador, una versión calculada o el nombre de un recurso, GitHub Actions permite utilizar **outputs**.
+
+Un output se origina normalmente en un step. Para definirlo, el proceso escribe un par `nombre=valor` en el archivo especial indicado por la variable de entorno `$GITHUB_OUTPUT`.
+
+Por ejemplo:
+
+```yaml
+steps:
+  - name: Determinar versión
+    id: version
+    run: echo "value=1.4.2" >> "$GITHUB_OUTPUT"
+```
+
+El identificador del step, definido mediante:
+
+```yaml
+id: version
+```
+
+permite consultar posteriormente el valor mediante:
+
+```text
+steps.version.outputs.value
+```
+
+Ese output pertenece inicialmente al step. Si el valor debe estar disponible para otro job, el job productor debe exponerlo mediante `outputs`.
+
+```yaml
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+      - name: Determinar versión
+        id: version
+        run: echo "value=1.4.2" >> "$GITHUB_OUTPUT"
+```
+
+En este caso existen dos niveles diferentes:
+
+```text
+step version
+    │
+    │ escribe value=1.4.2
+    ▼
+$GITHUB_OUTPUT
+    │
+    ▼
+steps.version.outputs.value
+    │
+    │ se expone como output del job
+    ▼
+jobs.prepare.outputs.version
+```
+
+Para utilizar el valor desde otro job debe existir una dependencia con el job productor. El contexto `needs` permite acceder a los outputs de los jobs declarados como dependencias:
+
+```yaml
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+
+    steps:
+      - name: Determinar versión
+        id: version
+        run: echo "value=1.4.2" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar versión
+        run: echo "Versión ${{ needs.prepare.outputs.version }}"
+```
+
+El flujo completo puede representarse así:
+
+```text
+step del job prepare
+        │
+        │ $GITHUB_OUTPUT
+        ▼
+output del step
+        │
+        │ jobs.prepare.outputs
+        ▼
+output del job prepare
+        │
+        │ needs.prepare.outputs.version
+        ▼
+job build
+```
+
+`needs` y `outputs` cumplen, por tanto, funciones diferentes. `needs` establece la **dependencia de ejecución** y permite acceder al contexto del job requerido. El output define el **valor que se desea comunicar**.
+
+En el ejemplo anterior:
+
+```yaml
+needs: prepare
+```
+
+hace que `build` espere a `prepare`, mientras que:
+
+```text
+needs.prepare.outputs.version
+```
+
+recupera el valor que `prepare` decidió exponer.
+
+![Output data from jobs for later usage](../assets/images/s08/outputs.png)
+
+Los outputs son adecuados para información pequeña que puede representarse como un valor textual, por ejemplo:
+
+```text
+versión = 1.4.2
+image-tag = a4f62c1
+environment = staging
+should-deploy = true
+```
+
+No deben utilizarse para transferir archivos. Si un job produce un reporte XML, un paquete, un binario u otro archivo que debe ser consumido por un job posterior, corresponde utilizar un **artifact**.
+
 
 
 ## 2. Estrategias de matriz
