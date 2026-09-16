@@ -32,16 +32,10 @@ nav:
       - 3. Contenedores I: unidad-1/03-contenedores-i.md
       - 4. Contenedores II: unidad-1/s04_contenedores_ii.md
       - 5. Contenedores III: unidad-1/s05_contenedores_iii.md
-      - 6. Docker compose: unidad-1/s06_docker_compose.md
+      - 6. Docker Compose: unidad-1/s06_docker_compose.md
 
   - Unidad II. Integración y entrega continua:
-      - 1. Fundamentos de CI con Github Actions: unidad-2/s07_fundamentos_ci_github_actions.md
-
-  - Unidad III. Infraestructura como código:
-      # sesiones correspondientes
-
-  - Unidad IV. Orquestación y operación de plataformas:
-      # sesiones correspondientes
+      - 1. Fundamentos de CI con GitHub Actions: unidad-2/s07_fundamentos_ci_github_actions.md
 
   - Laboratorios:
       - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md
