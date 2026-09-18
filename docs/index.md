@@ -23,6 +23,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 
 1. [Fundamentos de CI con Github Actions](unidad-2/s07_fundamentos_ci_github_actions.md)
 2. [Ingenieria de Pipelines](unidad-2/s08_ingenieria_pipelines_ci.md)
+3. [Entrega continua](unidad-2/s09_entrega_continua_estrategias_despliegue.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 
