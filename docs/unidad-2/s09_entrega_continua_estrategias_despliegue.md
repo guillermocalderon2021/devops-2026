@@ -141,7 +141,7 @@ promover, detener o revertir
 
 Estas responsabilidades no deben confundirse.
 
-Un test produce evidencia. Un gate decide si algo puede avanzar. Un artifact conserva un archivo. Un ambiente representa un destino y sus políticas. Una estrategia de despliegue determina cómo una versión sustituye a otra cuando existe infraestructura real que sirve tráfico.
+Un pipeline de entrega combina mecanismos con funciones diferentes. Las pruebas generan evidencia; los gates controlan el avance a partir de esa evidencia y de otras políticas. Los artifacts permiten conservar resultados o unidades construidas, mientras que los ambientes representan destinos con configuración y controles propios. La estrategia de despliegue define finalmente cómo la versión nueva sustituye a la que ya está en ejecución.
 
 Separar estas funciones permite razonar sobre el pipeline sin convertirlo en una secuencia de comandos difícil de modificar.
 
@@ -170,7 +170,7 @@ artefacto desplegable
     → imagen Docker devops-ci-cd-demo:<sha>
 ```
 
-GitHub Actions puede utilizar el mismo mecanismo de workflow artifacts para transportar ambos tipos de archivo durante una demostración. La diferencia es semántica: un reporte de pruebas proporciona evidencia; una imagen de contenedor representa una unidad que posteriormente puede ejecutarse.
+GitHub Actions puede utilizar workflow artifacts tanto para conservar los reportes de pruebas como para transportar la imagen exportada del contenedor. Aunque el mecanismo de almacenamiento sea el mismo, ambos archivos cumplen funciones distintas dentro del pipeline: los reportes sirven para inspeccionar resultados de verificación, mientras que la imagen constituye la unidad que posteriormente puede promoverse hacia otros ambientes.
 
 En un sistema de producción, una imagen de contenedor se almacena normalmente en un **container registry**. En esta sesión se utilizará temporalmente un workflow artifact para concentrar la atención en la identidad y promoción del mismo archivo. La publicación en un registry se retoma cuando el curso incorpora infraestructura y servicios de nube.
 
@@ -382,7 +382,7 @@ La plataforma de ejecución real se estudiará posteriormente. En esta sesión, 
 
 ## 4. Estrategias de despliegue
 
-Promover un artefacto responde **qué versión** puede avanzar. Todavía queda una pregunta distinta: cuando ya existe una versión ejecutándose, ¿cómo se sustituye por la nueva?
+Promover un artefacto determina qué versión está autorizada para avanzar. Una vez tomada esa decisión, queda por resolver cómo sustituir la versión que está en ejecución por la nueva.
 
 La respuesta depende de la estrategia de despliegue.
 
