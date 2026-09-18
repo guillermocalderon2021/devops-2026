@@ -12,6 +12,7 @@ theme:
   features:
     - navigation.sections
     - navigation.indexes
+    - navigation.footer
     - navigation.top
     - toc.follow
     - search.suggest
