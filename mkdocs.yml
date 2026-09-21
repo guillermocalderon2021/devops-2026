@@ -43,6 +43,7 @@ nav:
 
   - Laboratorios:
       - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md
+      - Laboratorio 2. Pipeline de integración continua con GitHub Actions: labs/lab02_integracion_continua.md
 plugins:
   - search
 

@@ -33,6 +33,7 @@ Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 | Laboratorio | Tema | Fecha límite |
 |---|---|---|
 | [Laboratorio 1](labs/lab01_contenedores.md) | Construcción y optimización de contenedores | 21 de septiembre de 2026 |
+| [Laboratorio 2](labs/lab02_integracion_continua.md) | Pipeline de integración continua | 26 de septiembre de 2026 |
 
 Los laboratorios se realizan en parejas y sus instrucciones completas se
 publican en esta sección.
