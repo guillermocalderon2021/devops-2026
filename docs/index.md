@@ -25,6 +25,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 8. [Ingenieria de Pipelines](unidad-2/s08_ingenieria_pipelines_ci.md)
 9. [Entrega continua](unidad-2/s09_entrega_continua_estrategias_despliegue.md)
 10. [Infraestructura y servicios en la nube para DevOps](unidad-2/s10_infraestructura_servicios_nube.md)
+11. [Despligue sobre plataformas gestionadas de contenedores](unidad-2/s11_despliegue_plataformas_gestionadas.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 

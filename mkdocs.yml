@@ -40,7 +40,7 @@ nav:
       - 8. Ingeniería de pipelines: unidad-2/s08_ingenieria_pipelines_ci.md
       - 9. Entrega continua: unidad-2/s09_entrega_continua_estrategias_despliegue.md
       - 10. Infraestructura y servicios en la nube para DevOps: unidad-2/s10_infraestructura_servicios_nube.md
-
+      - 11. Despligue sobre plataformas gestionadas de contenedores: unidad-2/s11_despliegue_plataformas_gestionadas.md
   - Laboratorios:
       - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md
       - Laboratorio 2. Pipeline de integración continua con GitHub Actions: labs/lab02_integracion_continua.md
