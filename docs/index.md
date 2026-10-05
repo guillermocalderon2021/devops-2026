@@ -27,6 +27,12 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 10. [Infraestructura y servicios en la nube para DevOps](unidad-2/s10_infraestructura_servicios_nube.md)
 11. [Despligue sobre plataformas gestionadas de contenedores](unidad-2/s11_despliegue_plataformas_gestionadas.md)
 
+### Unidad III. Infraestructura como Código
+
+12. [Terraform I: Infraestructura como código](unidad-3/clase12-terraform-i.md)
+
+
+
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 
 ## Laboratorios
