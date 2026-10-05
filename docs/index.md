@@ -29,7 +29,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 
 ### Unidad III. Infraestructura como Código
 
-12. [Terraform I: Infraestructura como código](unidad-3/clase12-terraform-i.md)
+12. [Terraform I: Infraestructura como código](unidad-3/clase-12-terraform-i.md)
 
 
 clase12-terraform-i.md
