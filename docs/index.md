@@ -32,7 +32,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 12. [Terraform I: Infraestructura como código](unidad-3/clase12-terraform-i.md)
 
 
-
+clase12-terraform-i.md
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 
 ## Laboratorios

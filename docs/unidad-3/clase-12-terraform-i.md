@@ -13,7 +13,7 @@
 
 ## 1. Infraestructura como código
 
-### 1.1. Infraestructura manual y reproducibilidad
+### 1.1. Infraestructura manual y reproducibilidad.
 
 En las clases anteriores se desplegó una aplicación sobre Google Cloud mediante la consola y órdenes de `gcloud`. El resultado podía ser funcional y repetible mientras la secuencia de pasos estuviera bien documentada, pero la infraestructura continuaba dependiendo de acciones ejecutadas directamente sobre el proveedor.
 
