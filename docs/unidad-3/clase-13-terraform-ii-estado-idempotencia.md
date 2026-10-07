@@ -271,7 +271,7 @@ No debe interpretarse como la afirmación de que cualquier configuración de Ter
 
 ## 6. Práctica con Google Cloud
 
-La práctica utiliza dos recursos que los estudiantes ya conocen de la unidad anterior:
+La práctica utiliza dos recursos que ya conocemos de la unidad anterior:
 
 - una cuenta de servicio administrada por el usuario;
 - un servicio de Cloud Run cuya revisión utiliza esa cuenta como identidad de ejecución.
@@ -292,47 +292,159 @@ google_cloud_run_v2_service.api
 
 *Figura 3. Dependencia entre los recursos administrados por Terraform y referencia a la imagen externa utilizada por Cloud Run.*
 
-### 6.1. Requisitos
+### 6.1. Preparación del proyecto de Google Cloud
 
 La práctica requiere:
 
+- Terraform 1.9 o posterior;
+- Google Cloud CLI (`gcloud`);
 - un proyecto de Google Cloud con facturación habilitada;
-- APIs de Cloud Run e IAM habilitadas;
+- las APIs de Cloud Run e IAM habilitadas;
 - credenciales de aplicación configuradas para Terraform;
 - permisos para crear cuentas de servicio y servicios de Cloud Run;
-- permiso `iam.serviceAccounts.actAs` sobre la cuenta de servicio utilizada como identidad del servicio;
-- acceso a Internet desde Google Cloud para obtener la imagen pública de ejemplo de Cloud Run.
+- permiso `iam.serviceAccounts.actAs` para utilizar la cuenta de servicio como identidad de ejecución.
 
-Las APIs pueden habilitarse con:
+Antes de crear archivos de Terraform, verificar la identidad activa de `gcloud`:
 
 ```bash
-gcloud services enable run.googleapis.com iam.googleapis.com
+gcloud auth list \
+  --filter=status:ACTIVE \
+  --format='value(account)'
 ```
 
-Para autenticación local del provider:
+Si no aparece la cuenta correcta:
+
+```bash
+gcloud auth login
+```
+
+Seleccionar después el proyecto que se utilizará durante la práctica:
+
+```bash
+gcloud config set project ID_DEL_PROYECTO
+```
+
+Verificar:
+
+```bash
+gcloud config get-value project
+```
+
+El valor mostrado debe ser exactamente el ID del proyecto de la práctica.
+
+!!! note "Proyecto de `gcloud` y proyecto de Terraform"
+    `gcloud config set project` establece el proyecto predeterminado utilizado por los comandos de `gcloud`. Terraform no dependerá de esta configuración para determinar su proyecto. El ID utilizado por Terraform se almacenará en `terraform.tfvars`, como se indica en la sección siguiente.
+
+Comprobar que las APIs necesarias estén habilitadas:
+
+```bash
+gcloud services list --enabled \
+  --filter='name:(run.googleapis.com OR iam.googleapis.com)' \
+  --format='value(name)'
+```
+
+Deben aparecer:
+
+```text
+iam.googleapis.com
+run.googleapis.com
+```
+
+Si alguna falta y la cuenta tiene permiso para habilitar servicios:
+
+```bash
+gcloud services enable \
+  run.googleapis.com \
+  iam.googleapis.com
+```
+
+Configurar después **Application Default Credentials (ADC)**:
 
 ```bash
 gcloud auth application-default login
 ```
 
-Definir el proyecto para la sesión actual:
+Este paso es diferente de `gcloud auth login`. El inicio de sesión de `gcloud` autentica la CLI; ADC permite que aplicaciones locales, como el provider de Google utilizado por Terraform, obtengan credenciales.
+
+Verificar ADC:
 
 ```bash
-export GOOGLE_PROJECT="ID_DEL_PROYECTO"
+gcloud auth application-default print-access-token > /dev/null
 ```
 
 En PowerShell:
 
 ```powershell
-$env:GOOGLE_PROJECT = "ID_DEL_PROYECTO"
+gcloud auth application-default print-access-token | Out-Null
 ```
 
+El comando debe finalizar sin error.
+
 !!! warning "Credenciales"
-    No se descargarán claves JSON de cuentas de servicio para esta práctica. La autenticación automatizada sin claves se retomará al integrar Terraform con CI/CD.
+    No se descargarán ni almacenarán claves JSON de cuentas de servicio para esta práctica. Las credenciales de usuario obtenidas mediante ADC se utilizarán únicamente para la ejecución local. La autenticación automatizada sin claves se retomará al integrar Terraform con CI/CD.
 
-### 6.2. Configuración
+Para esta práctica, una combinación razonable de roles predefinidos es:
 
-Crear un directorio nuevo y un archivo `main.tf`:
+| Rol | Identificador | Finalidad |
+|---|---|---|
+| Cloud Run Developer | `roles/run.developer` | Crear, modificar, consultar y eliminar el servicio de Cloud Run |
+| Create Service Accounts | `roles/iam.serviceAccountCreator` | Crear la cuenta de servicio |
+| Service Account User | `roles/iam.serviceAccountUser` | Utilizar la cuenta como identidad de ejecución (`iam.serviceAccounts.actAs`) |
+
+Si el estudiante debe habilitar las APIs, también necesita un rol que incluya `serviceusage.services.enable`, por ejemplo `roles/serviceusage.serviceUsageAdmin`.
+
+No se requiere otorgar `Owner` o `Editor` únicamente para completar esta práctica.
+
+Antes de continuar, verificar que no existan recursos anteriores con los mismos nombres:
+
+```bash
+gcloud iam service-accounts list \
+  --filter='accountId:tf-state-runtime'
+```
+
+```bash
+gcloud run services list \
+  --region=us-central1 \
+  --filter='metadata.name:tf-state-api'
+```
+
+No debería aparecer una cuenta `tf-state-runtime` ni un servicio `tf-state-api`. Si existen debido a una ejecución anterior propia, debe completarse primero su limpieza.
+
+### 6.2. Estructura de archivos
+
+Crear un directorio nuevo:
+
+```bash
+mkdir tf-clase13-gcp
+cd tf-clase13-gcp
+```
+
+La estructura debe quedar así:
+
+```text
+tf-clase13-gcp/
+├── main.tf
+├── variables.tf
+├── terraform.tfvars
+├── terraform.tfvars.example
+└── .gitignore
+```
+
+Cada archivo cumple una función distinta:
+
+| Archivo | Función | ¿Se versiona? |
+|---|---|---|
+| `main.tf` | Declara el provider y los recursos administrados | Sí |
+| `variables.tf` | Declara las variables que espera la configuración | Sí |
+| `terraform.tfvars` | Contiene los valores concretos utilizados por cada estudiante | No |
+| `terraform.tfvars.example` | Documenta los valores que deben proporcionarse | Sí |
+| `.gitignore` | Excluye artefactos locales y valores específicos del entorno | Sí |
+
+El Project ID no es una credencial secreta. Sin embargo, `terraform.tfvars` se excluirá porque cada estudiante puede utilizar un proyecto distinto y porque, en configuraciones reales, un archivo de variables también puede terminar conteniendo valores que no deben publicarse.
+
+#### `main.tf`
+
+Crear `main.tf`:
 
 ```hcl
 terraform {
@@ -347,7 +459,8 @@ terraform {
 }
 
 provider "google" {
-  region = "us-central1"
+  project = var.project_id
+  region  = var.region
 }
 
 resource "google_service_account" "runtime" {
@@ -357,7 +470,7 @@ resource "google_service_account" "runtime" {
 
 resource "google_cloud_run_v2_service" "api" {
   name                = "tf-state-api"
-  location            = "us-central1"
+  location            = var.region
   deletion_protection = false
 
   template {
@@ -370,12 +483,96 @@ resource "google_cloud_run_v2_service" "api" {
 }
 ```
 
-Antes de ejecutar Terraform, identificar:
+#### `variables.tf`
+
+Crear `variables.tf`:
+
+```hcl
+variable "project_id" {
+  description = "ID del proyecto de Google Cloud utilizado en la práctica"
+  type        = string
+}
+
+variable "region" {
+  description = "Región de Google Cloud utilizada en la práctica"
+  type        = string
+  default     = "us-central1"
+}
+```
+
+En esta clase las variables se utilizan únicamente para separar la configuración de los valores específicos del entorno. Su uso sistemático, tipos complejos, `locals`, outputs y módulos se desarrollará posteriormente.
+
+#### `terraform.tfvars`
+
+Crear `terraform.tfvars` y sustituir el valor de ejemplo por el ID real del proyecto:
+
+```hcl
+project_id = "ID_DEL_PROYECTO"
+region     = "us-central1"
+```
+
+Por ejemplo:
+
+```hcl
+project_id = "devops-estudiante-123456"
+region     = "us-central1"
+```
+
+Terraform carga automáticamente `terraform.tfvars`; por tanto, no es necesario definir una variable de entorno para seleccionar el proyecto ni utilizar `-var` en cada comando.
+
+#### `terraform.tfvars.example`
+
+Crear `terraform.tfvars.example`:
+
+```hcl
+project_id = "ID_DEL_PROYECTO"
+region     = "us-central1"
+```
+
+Este archivo funciona como plantilla para cualquier persona que clone el repositorio.
+
+#### `.gitignore`
+
+Crear `.gitignore`:
+
+```gitignore
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
+```
+
+El archivo `.terraform.lock.hcl` **no** debe agregarse al `.gitignore`. Se genera durante `terraform init` y debe versionarse para conservar la selección de versiones de providers.
+
+Antes de ejecutar Terraform, la carpeta debe verse así:
+
+```text
+tf-clase13-gcp/
+├── .gitignore
+├── main.tf
+├── terraform.tfvars
+├── terraform.tfvars.example
+└── variables.tf
+```
+
+Todavía no deben existir:
+
+```text
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+```
+
+Estos elementos aparecerán en etapas posteriores del flujo.
+
+Antes de continuar, identificar en la configuración:
 
 1. las dos direcciones de recursos;
 2. la referencia que establece la dependencia;
-3. cuál de los dos recursos puede crearse primero;
-4. qué valores podrían conocerse únicamente después de la creación.
+3. cuál de los recursos debe existir antes de configurar la identidad del servicio;
+4. qué valores podrían conocerse únicamente después de la creación;
+5. de dónde obtiene Terraform el ID del proyecto y la región.
 
 La imagen `us-docker.pkg.dev/cloudrun/container/hello` es una dependencia externa de la práctica. Terraform administra el servicio de Cloud Run que la referencia, no la imagen.
 
@@ -383,11 +580,42 @@ La imagen `us-docker.pkg.dev/cloudrun/container/hello` es una dependencia extern
 
 ### 6.3. Inicialización y primer plan
 
+Antes de inicializar, comprobar que `terraform.tfvars` contiene el Project ID correcto:
+
+```bash
+cat terraform.tfvars
+```
+
+En PowerShell:
+
+```powershell
+Get-Content terraform.tfvars
+```
+
+El valor de `project_id` debe coincidir con:
+
+```bash
+gcloud config get-value project
+```
+
+Si ambos valores son distintos, detener la práctica y corregirlos. `gcloud` y Terraform mantienen su selección de proyecto por mecanismos diferentes, pero durante esta práctica deben apuntar al mismo proyecto para que las verificaciones sean coherentes.
+
+Ejecutar:
+
 ```bash
 terraform init
 terraform validate
 terraform plan
 ```
+
+Después de `terraform init` deben aparecer:
+
+```text
+.terraform/
+.terraform.lock.hcl
+```
+
+No debe existir todavía `terraform.tfstate`, porque no se ha aplicado ningún cambio.
 
 El plan debe mostrar dos recursos por crear.
 
@@ -414,11 +642,21 @@ terraform apply
 
 Revisar el plan y confirmar únicamente si coincide con lo esperado.
 
+Después del primer `apply` debe aparecer:
+
+```text
+terraform.tfstate
+```
+
+Este archivo representa el estado local estudiado en esta clase. No debe editarse manualmente ni agregarse al repositorio.
+
 Al finalizar, verificar los objetos directamente en Google Cloud:
 
 ```bash
+PROJECT_ID="$(gcloud config get-value project)"
+
 gcloud iam service-accounts describe \
-  tf-state-runtime@${GOOGLE_PROJECT}.iam.gserviceaccount.com
+  "tf-state-runtime@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
 ```bash
@@ -461,7 +699,8 @@ terraform show
 
 **Punto de control 2.** Para cada recurso, distinguir tres datos:
 
-- un valor escrito explícitamente en `main.tf`;
+- un valor definido directamente en `main.tf`;
+- un valor proporcionado mediante `terraform.tfvars`;
 - un valor obtenido mediante una referencia a otro recurso;
 - un valor calculado por el provider después de crear el objeto.
 
