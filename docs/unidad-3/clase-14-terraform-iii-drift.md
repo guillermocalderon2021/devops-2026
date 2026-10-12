@@ -6,14 +6,14 @@ La sesión aborda los cambios realizados fuera del flujo de Terraform y la incor
 
 Al finalizar, el estudiante podrá:
 
-1. identificar diferencias entre configuración, estado e infraestructura remota;
-2. interpretar la actualización implícita del estado durante `terraform plan`;
-3. utilizar `terraform plan -refresh-only` para inspeccionar cambios externos;
-4. seleccionar una estrategia de reconciliación a partir del estado deseado;
-5. distinguir drift de infraestructura existente no administrada;
-6. importar un recurso existente mediante un bloque `import`.
+1. Identificar diferencias entre configuración, estado e infraestructura remota;
+2. Interpretar la actualización implícita del estado durante `terraform plan`;
+3. Utilizar `terraform plan -refresh-only` para inspeccionar cambios externos;
+4. Seleccionar una estrategia de reconciliación a partir del estado deseado;
+5. Distinguir drift de infraestructura existente no administrada;
+6. Importar un recurso existente mediante un bloque `import`.
 
-La práctica utiliza Microsoft Azure. El cambio de `hashicorp/google` a `hashicorp/azurerm` permite observar que el modelo de Terraform se mantiene aunque cambien el proveedor, los tipos de recursos y las APIs utilizadas.
+La práctica utiliza Microsoft Azure (por los problemas de facturacion que experimentamos en GCP...). El cambio de `hashicorp/google` a `hashicorp/azurerm` permite observar que el modelo de Terraform se mantiene aunque cambien el proveedor, los tipos de recursos y las APIs utilizadas.
 
 ---
 
@@ -31,11 +31,11 @@ Terraform state
 Infraestructura remota
 ```
 
-La **configuración** declara el estado deseado.
+- La **configuración** declara el estado deseado.
 
-El **state** mantiene las asociaciones entre direcciones de recursos de Terraform y objetos remotos, junto con atributos conocidos de esos objetos.
+- El **state** mantiene las asociaciones entre direcciones de recursos de Terraform y objetos remotos, junto con atributos conocidos de esos objetos.
 
-La **infraestructura remota** corresponde a los recursos que existen actualmente en el proveedor.
+- La **infraestructura remota** corresponde a los recursos que existen actualmente en el proveedor.
 
 Después de un `apply` exitoso, estas representaciones deberían ser consistentes para los atributos administrados por Terraform.
 
@@ -80,7 +80,7 @@ environment=class      environment=class     environment=production
 
 Esta diferencia entre el estado registrado por Terraform y el objeto remoto se denomina **resource drift**.
 
-El origen del cambio puede ser accidental o intencional. Su detección debe preceder a la decisión de reconciliación.
+El origen del cambio puede ser accidental o intencional. Antes de decidir cómo corregir la diferencia, primero debe identificarse qué cambió, dónde ocurrió el cambio y si este debe conservarse o revertirse.
 
 ![Aparición del drift tras un cambio externo en Azure](imagenes/terraform-iii/figura-01-aparicion-drift.png)
 
@@ -187,7 +187,7 @@ terraform apply -refresh-only
 
 ## 2. Reconciliación
 
-La detección de drift identifica una diferencia técnica. La reconciliación establece qué representación debe modificarse para recuperar consistencia.
+Detectar drift permite reconocer que existe una diferencia entre la configuración, el state y la infraestructura real. La reconciliación consiste en decidir cuál de esas representaciones debe modificarse para recuperar consistencia.
 
 Existen dos casos principales.
 
@@ -357,11 +357,11 @@ El objetivo es observar drift, actualización del `state`, reconciliación e imp
 
 Para esta práctica bastan tres conceptos.
 
-**Subscription.** Es el ámbito de Azure dentro del cual se crean los recursos y se aplica la facturación y el control de acceso.
+- **Subscription.** Es el ámbito de Azure dentro del cual se crean los recursos y se aplica la facturación y el control de acceso.
 
-**Resource Group.** Es un contenedor lógico de recursos de Azure. Todo recurso utilizado en esta práctica pertenecerá a un Resource Group.
+- **Resource Group.** Es un contenedor lógico de recursos de Azure. Todo recurso utilizado en esta práctica pertenecerá a un Resource Group.
 
-**Storage Account.** Es el recurso administrativo de Azure Storage. Puede dar acceso a servicios como blobs, archivos, colas y tablas. En esta práctica no se almacenarán datos; se utilizará únicamente como recurso administrado por Terraform.
+- **Storage Account.** Es el recurso administrativo de Azure Storage. Puede dar acceso a servicios como blobs, archivos, colas y tablas. En esta práctica no se almacenarán datos; se utilizará únicamente como recurso administrado por Terraform.
 
 Terraform creará:
 
@@ -518,7 +518,7 @@ Completar el archivo con valores propios:
 
 ```hcl
 subscription_id           = "00000000-0000-0000-0000-000000000000"
-location                  = "eastus"
+location                  = "mexicocentral"
 resource_group_name       = "rg-devops-drift-gc123"
 import_resource_group_name = "rg-devops-import-gc123"
 storage_account_name      = "stdevopsgc123"
@@ -543,7 +543,7 @@ Si Azure informa `StorageAccountAlreadyTaken`, cambiar únicamente `storage_acco
 
 ```hcl
 subscription_id            = "ID_DE_LA_SUSCRIPCION"
-location                   = "eastus"
+location                   = "mexicocentral"
 resource_group_name        = "rg-devops-drift-IDENTIFICADOR"
 import_resource_group_name = "rg-devops-import-IDENTIFICADOR"
 storage_account_name       = "stdevopsIDENTIFICADOR"
@@ -901,7 +901,7 @@ Crear el Resource Group desde Azure CLI. En el siguiente comando, sustituir el n
 ```bash
 az group create \
   --name rg-devops-import-IDENTIFICADOR \
-  --location eastus
+  --location mexicocentral
 ```
 
 La salida JSON confirma la creación.
