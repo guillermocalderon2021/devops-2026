@@ -32,6 +32,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 12. [Terraform I: Infraestructura como código](unidad-3/clase-12-terraform-i.md)
 13. [Terraform II: Estado e Idempotencia](unidad-3/clase-13-terraform-ii-estado-idempotencia.md)
 14. [Terraform III: drift y reconciliación](unidad-3/clase-14-terraform-iii-drift.md)
+15. [Terraform Modular](unidad-3/clase-15-terraform-modular.md)
 
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
