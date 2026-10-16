@@ -47,7 +47,7 @@ nav:
       - 13. Terraform II- Estado de idempotencia: unidad-3/clase-13-terraform-ii-estado-idempotencia.md
       - 14. Terraform III - Drift y reconciliación: unidad-3/clase-14-terraform-iii-drift.md
       - 15. Terraform Modular: unidad-3/clase-15-terraform-modular.md
-      - 16. Estado remoto y ambientes: unidad-3/clase-16-terraform-estado-remoto-y-ambientes.md
+      - 16. Estado remoto y ambientes: unidad-3/clase-16-estado-remoto-y-ambientes.md
 
   - Laboratorios:
       - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md
