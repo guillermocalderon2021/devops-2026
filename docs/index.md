@@ -33,6 +33,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 13. [Terraform II: Estado e Idempotencia](unidad-3/clase-13-terraform-ii-estado-idempotencia.md)
 14. [Terraform III: drift y reconciliación](unidad-3/clase-14-terraform-iii-drift.md)
 15. [Terraform Modular](unidad-3/clase-15-terraform-modular.md)
+16. [Estado remoto y ambientes](unidad-3/clase-16-estado-remoto-y-ambientes.md)
 
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
