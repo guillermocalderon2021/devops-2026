@@ -220,7 +220,7 @@ La revisión debe considerar:
 La afirmación:
 
 ```text
-workflow verde
+workflow exitoso
 ```
 
 solo significa que las verificaciones configuradas terminaron correctamente.
