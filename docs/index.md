@@ -46,6 +46,9 @@ Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 | [Laboratorio 1](labs/lab01_contenedores.md) | Construcción y optimización de contenedores | 21 de septiembre de 2026 |
 | [Laboratorio 2](labs/lab02_integracion_continua.md) | Pipeline de integración continua | 26 de septiembre de 2026 |
 | [Laboratorio 3](labs/lab03_entrega_continua_nube.md) | Despliegue sobre plataformas gestionadas de contenedores | 29 de septiembre de 2026 |
+| [Laboratorio 4](labs/lab04_infraestructura_como_codigo_terraform.md) | Infraestructura como código con Terraform
+ | 31 de octubre de 2026 |
+
 
 
 Los laboratorios se realizan en parejas y sus instrucciones completas se
