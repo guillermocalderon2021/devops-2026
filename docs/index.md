@@ -36,6 +36,9 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 16. [Estado remoto y ambientes](unidad-3/clase-16-estado-remoto-y-ambientes.md)
 17. [Terraform en CI/CD](unidad-3/clase-17-terraform-en-cicd.md)
 
+### Unidad IV. Orquestación y operación de plataformas
+
+18. [Fundamentos de Kubernetes](unidad-4/tema18_fundamentos_kubernetes.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 
