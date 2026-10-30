@@ -52,6 +52,7 @@ nav:
 
   - Unidad IV. Orquestación y operación de plataformas:
       - 18. Fundamentos de Kubernetes: unidad-4/tema18_fundamentos_kubernetes.md
+      - 19. Servicios, configuración y almacenamiento en Kubernetes: unidad-4/servicios_configuracion_almacenamiento.md
 
   - Laboratorios:
       - Laboratorio 1. Construcción y optimización de contenedores: labs/lab01_contenedores.md

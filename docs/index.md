@@ -39,6 +39,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 ### Unidad IV. Orquestación y operación de plataformas
 
 18. [Fundamentos de Kubernetes](unidad-4/tema18_fundamentos_kubernetes.md)
+19. [Servicios, configuración y almacenamiento en Kubernetes](unidad-4/servicios_configuracion_almacenamiento.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 
