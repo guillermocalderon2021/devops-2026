@@ -40,6 +40,7 @@ El material está organizado siguiendo la secuencia de sesiones del curso.
 
 18. [Fundamentos de Kubernetes](unidad-4/tema18_fundamentos_kubernetes.md)
 19. [Servicios, configuración y almacenamiento en Kubernetes](unidad-4/servicios_configuracion_almacenamiento.md)
+20. [Operación y diagnóstico de aplicaciones en Kubernetes](unidad-4/operacion_diagnostico_kubernetes.md)
 
 Las siguientes sesiones se incorporarán progresivamente durante el ciclo.
 
