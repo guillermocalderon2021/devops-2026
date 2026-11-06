@@ -54,7 +54,7 @@ nav:
       - 18. Fundamentos de Kubernetes: unidad-4/tema18_fundamentos_kubernetes.md
       - 19. Servicios, configuración y almacenamiento en Kubernetes: unidad-4/servicios_configuracion_almacenamiento.md
       - 20. Operación y diagnóstico de aplicaciones en Kubernetes: unidad-4/operacion_diagnostico_kubernetes.md
-
+      - 21. Integración de infraestructura, Kubernetes y despliegue de aplicaciones: unidad-4/integracion_infraestructura_kubernetes_despliegue.md
 
 
   - Laboratorios:
